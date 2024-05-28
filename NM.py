@@ -44,6 +44,7 @@ st.write(f"Accuracy: {accuracy_score(y_test, y_pred_rf)}")
 st.write(f"Classification Report:\n{classification_report(y_test, y_pred_rf)}")
 st.write(f"Confusion Matrix:\n{confusion_matrix(y_test, y_pred_rf)}")
 
+# Convert data to numpy arrays for TensorFlow
 X_train = np.array(X_train).astype(np.float32)
 X_test = np.array(X_test).astype(np.float32)
 y_train = np.array(y_train).astype(np.float32)
@@ -59,11 +60,14 @@ tf_model = tf.keras.models.Sequential([
 ])
 
 tf_model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-history = tf_model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test), verbose=0)
+
+# Reduce verbosity of the fit function
+history = tf_model.fit(X_train, y_train, epochs=10, validation_data=(X_test, y_test), verbose=1)
 
 st.write("TensorFlow Model Results:")
 accuracy = tf_model.evaluate(X_test, y_test, verbose=0)[1]
-y_pred_tf = (tf_model.predict(X_test) > 0.5).astype("int32")
+y_pred_tf = (tf_model.predict(X_test, verbose=0) > 0.5).astype("int32")
+
 st.write(f"Accuracy: {accuracy}")
 st.write(f"Classification Report:\n{classification_report(y_test, y_pred_tf)}")
 st.write(f"Confusion Matrix:\n{confusion_matrix(y_test, y_pred_tf)}")
